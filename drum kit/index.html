@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drum Kit</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="keys">
+        <button class="click" data-key="65">
+            <div data-key="65" class="key">
+                <kbd>A</kbd>
+                <span class="sound">clap</span>
+            </div>
+        </button>
+        <div data-key="83" class="key">
+            <kbd>S</kbd>
+            <span class="sound">hihat</span>
+        </div>
+        <div data-key="68" class="key">
+            <kbd>D</kbd>
+            <span class="sound">kick</span>
+        </div>
+        <div data-key="70" class="key">
+            <kbd>F</kbd>
+            <span class="sound">openhat</span>
+        </div>
+        <div data-key="71" class="key">
+            <kbd>G</kbd>
+            <span class="sound">boom</span>
+        </div>
+        <div data-key="72" class="key">
+            <kbd>H</kbd>
+            <span class="sound">ride</span>
+        </div>
+        <div data-key="74" class="key">
+            <kbd>J</kbd>
+            <span class="sound">snare</span>
+        </div>
+        <div data-key="75" class="key">
+            <kbd>K</kbd>
+            <span class="sound">tom</span>
+        </div>
+        <div data-key="76" class="key">
+            <kbd>L</kbd>
+            <span class="sound">tink</span>
+        </div>
+    </div>
+    <audio data-key="65" src="sound/clap.wav"></audio>
+  <audio data-key="83" src="sound/hihat.wav"></audio>
+  <audio data-key="68" src="sound/kick.wav"></audio>
+  <audio data-key="70" src="sound/openhat.wav"></audio>
+  <audio data-key="71" src="sound/boom.wav"></audio>
+  <audio data-key="72" src="sound/ride.wav"></audio>
+  <audio data-key="74" src="sound/snare.wav"></audio>
+  <audio data-key="75" src="sound/tom.wav"></audio>
+  <audio data-key="76" src="sound/tink.wav"></audio>
+
+
+    <script>
+        const timers = {};
+
+        function playAudio(key) {
+            const audio = document.querySelector(`audio[data-key="${key}"]`); //grabs the data from the correct audio file using [data-key]
+            if (audio) {
+                const timerId = `timer-${key}`; //Seting up a timer, containing individual ID's
+
+                if (timers[timerId] && timers[timerId].clearTimeout) {
+                    //Make sure that there is no current timeout on the clicked Div, or else wont work.
+                    timers[timerId].clearTimeout();
+                }
+
+                audio.currentTime = 0; //Set audio current time to 0, so when played, it can be pressed/selected again to replay without having to wait.
+                audio.play(); //Plays the audio file
+
+                const div = document.querySelector(`div.key[data-key="${key}"]`); //Selects <div> with class "key" and the correct data-key[#].
+                div.classList.add("playing"); //Adds playing class to add the 'playing' effect.
+
+                timers[timerId] = setTimeout(
+                    //Sets up delay to remove the class 'playing' from the given <div> after .1 seconds.
+                    () => div.classList.remove("playing"),
+                    100
+                );
+            }
+        }
+
+
+        window.addEventListener("keydown", e => {
+            //Rather then clicked, if keydown is pressed will get a function getting keyCode from button pressed.
+            playAudio(e.keyCode);
+        });
+
+
+        document.querySelectorAll("div.key").forEach(div => {
+            //Goes through every <div> element with the class "key"
+            div.addEventListener("click", function () {
+                //Adds click event listener to each <div>, so no need for <button> element.
+                const key = this.dataset.key; //dataset.key grabs the current div's data-key
+                playAudio(key); //runs the data-key through the playAudio(key)
+            });
+        });
+    </script>
+</body>
+
+</html>
+</body>
+
+</html>
